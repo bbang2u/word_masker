@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>단어 마스킹 변환기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    pre {
+      background-color: #f4f4f4;
+      padding: 20px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>단어 마스킹 변환기</h1>
+  <textarea id="inputText" placeholder="여기에 문장을 입력하세요..."></textarea>
+  <br>
+  <button onclick="convertText()">변환하기</button>
+  <h2>결과</h2>
+  <pre id="outputText"></pre>
+
+  <script>
+    function convertText() {
+      const input = document.getElementById("inputText").value.trim();
+      const words = input.split(/\s+/); // 공백 기준 분리
+
+      const total = words.length;
+      const numToReplace = Math.floor(total / 2);
+
+      const indices = new Set();
+      while (indices.size < numToReplace) {
+        const randomIndex = Math.floor(Math.random() * total);
+        indices.add(randomIndex);
+      }
+
+      const maskedWords = words.map((word, i) =>
+        indices.has(i) ? "_".repeat(word.length) : word
+      );
+
+      let output = "";
+      for (let i = 0; i < maskedWords.length; i++) {
+        output += maskedWords[i] + " ";
+        if ((i + 1) % 15 === 0) output += "\n";
+      }
+
+      document.getElementById("outputText").innerText = output.trim();
+    }
+  </script>
+</body>
+</html>
