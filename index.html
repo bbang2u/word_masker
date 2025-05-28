@@ -41,29 +41,29 @@
     function convertText() {
       const input = document.getElementById("inputText").value;
 
-      // 단어(문자+숫자)와 나머지 구분 (공백, 줄바꿈 포함)
-      const tokens = input.match(/\w+|\W+/g); // 단어 또는 비단어 그룹
+      // 단어와 나머지(공백/구두점 등) 분리
+      const tokens = input.match(/[\p{L}\p{N}]+|\P{L}+/gu); // 유니코드 단어 및 비단어
 
       if (!tokens) return;
 
-      // 단어만 추출해서 인덱스 저장
+      // 단어 인덱스 추출
       const wordIndices = tokens
         .map((token, index) => ({ token, index }))
-        .filter(({ token }) => /^\w+$/.test(token)) // 단어만
+        .filter(({ token }) => /^[\p{L}\p{N}]+$/u.test(token)) // 단어만
         .map(({ index }) => index);
 
-      // 절반 무작위 선택
+      // 무작위 절반 선택
       const numToReplace = Math.floor(wordIndices.length / 2);
       const indicesToReplace = new Set(
         wordIndices.sort(() => 0.5 - Math.random()).slice(0, numToReplace)
       );
 
-      // 치환
+      // 치환 처리
       const maskedTokens = tokens.map((token, i) =>
         indicesToReplace.has(i) ? "_".repeat(token.length) : token
       );
 
-      // 결과 출력
+      // 출력
       document.getElementById("outputText").innerText = maskedTokens.join("");
     }
   </script>
